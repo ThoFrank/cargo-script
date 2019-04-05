@@ -174,7 +174,7 @@ fn parse_args() -> SubCommand {
         .version(version)
         .about(about)
         .setting(AppSettings::SubcommandRequiredElseHelp)
-        .subcommand(SubCommand::with_name("script")
+        .subcommand(SubCommand::with_name("scripter")
             .version(version)
             .about(about)
             .usage("cargo script [FLAGS OPTIONS] [--] <script> <args>...")

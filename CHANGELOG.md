@@ -1,3 +1,8 @@
+0.2.10
+======
+
+* Fixed cargo integration
+
 0.2.9
 =====
 

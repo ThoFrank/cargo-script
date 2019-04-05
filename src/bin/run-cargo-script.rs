@@ -38,7 +38,7 @@ fn main() {
 
     let mut cmd = Command::new("cargo");
 
-    cmd.arg("script")
+    cmd.arg("scripter")
         .arg(path)
         .arg("--");
 
