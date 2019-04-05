@@ -1,3 +1,7 @@
+0.2.9
+======
+
+* Fixed blocked stdout
 
 # v0.2.8
 

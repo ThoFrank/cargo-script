@@ -1,6 +1,6 @@
 #[test]
 fn test_expr_0() {
-    let out = cargo_script!("-e", with_output_marker!("0")).unwrap();
+    let out = cargo_script!("-e", with_output_marker!("0"));
     scan!(out.stdout_output();
         ("0") => ()
     ).unwrap()
@@ -8,7 +8,7 @@ fn test_expr_0() {
 
 #[test]
 fn test_expr_comma() {
-    let out = cargo_script!("-e", with_output_marker!("[1, 2, 3]")).unwrap();
+    let out = cargo_script!("-e", with_output_marker!("[1, 2, 3]"));
     scan!(out.stdout_output();
         ("[1, 2, 3]") => ()
     ).unwrap()
@@ -16,13 +16,13 @@ fn test_expr_comma() {
 
 #[test]
 fn test_expr_dnc() {
-    let out = cargo_script!("-e", "swing begin").unwrap();
+    let out = cargo_script!("-e", "swing begin");
     assert!(!out.success());
 }
 
 #[test]
 fn test_expr_temporary() {
-    let out = cargo_script!("-e", "[1].iter().max()").unwrap();
+    let out = cargo_script!("-e", "[1].iter().max()");
     assert!(out.success());
 }
 
@@ -32,7 +32,7 @@ fn test_expr_dep() {
         "-e", with_output_marker!(
             prelude "use boolinator::Boolinator;";
             "true.as_some(1)"
-        )).unwrap();
+        ));
     scan!(out.stdout_output();
         ("Some(1)") => ()
     ).unwrap()
@@ -44,7 +44,7 @@ fn test_expr_dep_extern() {
         "-e", with_output_marker!(
             prelude "use boolinator::Boolinator;";
             "true.as_some(1)"
-        )).unwrap();
+        ));
     scan!(out.stdout_output();
         ("Some(1)") => ()
     ).unwrap();
@@ -53,23 +53,23 @@ fn test_expr_dep_extern() {
         "-e", with_output_marker!(
             prelude "use boolinator::Boolinator;";
             "true.as_some(1)"
-        )).unwrap();
+        ));
     assert!(!out.success());
 
     let out = cargo_script!("-x", "boolinator",
-        "-e", with_output_marker!("true")).unwrap();
+        "-e", with_output_marker!("true"));
     assert!(!out.success());
 
     let out = cargo_script!("-e", with_output_marker!(
         prelude "use boolinator::Boolinator;";
         "true.as_some(1)"
-    )).unwrap();
+    ));
     assert!(!out.success());
 }
 
 #[test]
 fn test_expr_panic() {
-    let out = cargo_script!("-e", with_output_marker!("panic!()")).unwrap();
+    let out = cargo_script!("-e", with_output_marker!("panic!()"));
     assert!(!out.success());
 }
 
@@ -80,7 +80,7 @@ fn test_expr_qmark() {
     } else {
         with_output_marker!("try!(\"42\".parse::<i32>()).wrapping_add(1)")
     };
-    let out = cargo_script!("-e", code).unwrap();
+    let out = cargo_script!("-e", code);
     scan!(out.stdout_output();
         ("43") => ()
     ).unwrap();
@@ -92,7 +92,7 @@ fn test_expr_template() {
     let out = cargo_script!(
         #[env(CARGO_SCRIPT_DEBUG_TEMPLATE_PATH=template_dir)]
         "-t", "shout", "-e", with_output_marker!(r#""no way? no way!""#)
-    ).unwrap();
+    );
     scan!(out.stdout_output();
         ("NO WAY? NO WAY!") => ()
     ).unwrap();
@@ -104,7 +104,7 @@ fn test_expr_template_with_deps() {
     let out = cargo_script!(
         #[env(CARGO_SCRIPT_DEBUG_TEMPLATE_PATH=template_dir)]
         "-t", "boolinate", "-e", with_output_marker!(r#"true"#)
-    ).unwrap();
+    );
     scan!(out.stdout_output();
         ("Some(())") => ()
     ).unwrap();
@@ -116,7 +116,7 @@ fn test_expr_template_override_expr() {
     let out = cargo_script!(
         #[env(CARGO_SCRIPT_DEBUG_TEMPLATE_PATH=template_dir)]
         "-e", with_output_marker!(r#"true"#)
-    ).unwrap();
+    );
     scan!(out.stdout_output();
         ("Some(())") => ()
     ).unwrap();

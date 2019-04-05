@@ -11,12 +11,12 @@ macro_rules! cargo_script {
 
             let cargo_lock = ::util::CARGO_MUTEX.lock().expect("could not acquire Cargo mutext");
 
-            let temp_dir = tempdir::TempDir::new("cargo-script-test").unwrap();
+            let temp_dir = tempdir::TempDir::new("cargo-script-test").expect("no temporary dir");
             let cmd_str;
             let out = {
                 let target_dir = ::std::env::var("CARGO_TARGET_DIR")
                     .unwrap_or_else(|_| String::from("target"));
-                let mut cmd = Command::new(format!("{}/debug/cargo-script", target_dir));
+                let mut cmd = Command::new(format!("{}/debug/cargo-scripter", target_dir));
                 cmd.arg("script");
                 cmd.arg("--pkg-path").arg(temp_dir.path());
                 $(
@@ -47,7 +47,7 @@ macro_rules! cargo_script {
             drop(temp_dir);
             drop(cargo_lock);
 
-            out
+            out.expect("can't run")
         }
     };
 
