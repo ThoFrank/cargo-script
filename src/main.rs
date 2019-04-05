@@ -342,7 +342,7 @@ fn parse_args() -> SubCommand {
         }
     }
 
-    let m = m.subcommand_matches("script").unwrap();
+    let m = m.subcommand_matches("scripter").unwrap();
 
     fn owned_vec_string<'a, I>(v: Option<I>) -> Vec<String>
     where I: ::std::iter::Iterator<Item=&'a str> {
