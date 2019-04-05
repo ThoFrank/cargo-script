@@ -34,22 +34,22 @@ Table of contents:
 <a name="installation"></a>
 ## Installation
 
-The recommended method for installing `cargo-script` is by using Cargo's `install` subcommand:
+The recommended method for installing `cargo-scripter` is by using Cargo's `install` subcommand:
 
 ```sh
-cargo install cargo-script
+cargo install cargo-scripter
 ```
 
-If you have already installed `cargo-script`, you can update to the latest version by using:
+If you have already installed `cargo-scripter`, you can update to the latest version by using:
 
 ```sh
-cargo install --force cargo-script
+cargo install --force cargo-scripter
 ```
 
 <a name="migrating"></a>
 ### Migrating From Previous Versions
 
-`cargo-script` supports migrating data from previous versions.  This is not mandatory, but may be preferred.  Using `cargo script --migrate-data dry-run` will perform a "dry run", informing you of any applicable migrations.  Using the `for-real` option will actually perform the migration.  The following migrations may be applicable:
+`cargo-scripter` supports migrating data from previous versions.  This is not mandatory, but may be preferred.  Using `cargo scripter --migrate-data dry-run` will perform a "dry run", informing you of any applicable migrations.  Using the `for-real` option will actually perform the migration.  The following migrations may be applicable:
 
 - 0.1 → 0.2: On non-Windows platforms, and when `CARGO_HOME` is defined, moves the location for cached data from `$CARGO_HOME/.cargo` to `$CARGO_HOME`.
 
@@ -63,16 +63,18 @@ The following features are defined:
 <a name="compiling"></a>
 ### Manually Compiling and Installing
 
-`cargo-script` requires Rust 1.11 or higher to build.  Rust 1.4+ was supported prior to version 0.2.
+`cargo-scripter` requires Rust 1.11 or higher to build.  Rust 1.4+ was supported prior to version 0.2.
 
-Once built, you should place the resulting executable somewhere on your `PATH`.  At that point, you should be able to invoke it by using `cargo script`.  Note that you *can* run the executable directly, but the first argument will *need* to be `script`.
+Once built, you should place the resulting executable somewhere on your `PATH`.  At that point, you should be able to invoke it by using `cargo scripter`.  Note that you *can* run the executable directly, but the first argument will *need* to be `scripter`.
 
-If you want to run `cargo script` from a hashbang on UNIX, or via file associations on Windows, you should also install the `run-cargo-script` program somewhere on `PATH`.
+If you want to run `cargo scripter` from a hashbang on UNIX, or via file associations on Windows, you should also install the `run-cargo-scripter` program somewhere on `PATH`.
 
 <a name="hashbang"></a>
 ### Self-Executing Scripts
 
 On UNIX systems, you can use `#!/usr/bin/env run-cargo-script` as a hashbang line in a Rust script.  If the script file is executable, this will allow you to execute a script file directly.
+
+There is also `run-cargo-script-force` variant for a "forced" version of `cargo scripter --force` run. 
 
 If you are using Windows, you can associate the `.crs` extension (which is simply a renamed `.rs` file) with `run-cargo-script`.  This allows you to execute Rust scripts simply by naming them like any other executable or script.
 
@@ -83,24 +85,24 @@ If you want to make a script usable across platforms, it is recommended that you
 <a name="usage"></a>
 ## Usage
 
-Generally, you will want to use `cargo-script` by invoking it as `cargo script` (note the lack of a hypen).  Doing so is equivalent to invoking it as `cargo-script script`.  `cargo-script` supports several other subcommands, which can be accessed by running `cargo-script` directly.  You can also get an overview of the available options using the `--help` flag.
+Generally, you will want to use `cargo-scripter` by invoking it as `cargo scripter` (note the lack of a hypen).  Doing so is equivalent to invoking it as `cargo-script scripter`.  `cargo-scripter` supports several other subcommands, which can be accessed by running `cargo-scripter` directly.  You can also get an overview of the available options using the `--help` flag.
 
 <a name="scripts"></a>
 ### Scripts
 
-The primary use for `cargo-script` is for running Rust source files as scripts.  For example:
+The primary use for `cargo-scripter` is for running Rust source files as scripts.  For example:
 
 ```shell
 $ echo 'fn main() { println!("Hello, World!"); }' > hello.rs
-$ cargo script hello.rs
+$ cargo scripter hello.rs
 Hello, World!
-$ cargo script hello # you can leave off the file extension
+$ cargo scripter hello # you can leave off the file extension
 Hello, World!
 ```
 
 The output of Cargo will be hidden unless compilation fails, or takes longer than a few seconds.
 
-`cargo-script` will also look for embedded dependency and manifest information in the script.  For example, all of the following are equivalent:
+`cargo-scripter` will also look for embedded dependency and manifest information in the script.  For example, all of the following are equivalent:
 
 - `now.crs` (code block manifest with UNIX hashbang and `.crs` extension):
 
@@ -136,10 +138,10 @@ The output of Cargo will be hidden unless compilation fails, or takes longer tha
 
     > **Note**: you can write multiple dependencies by separating them with commas.  *E.g.* `time="0.1.25", libc="0.2.5"`.
 
-On running either of these, `cargo-script` will generate a Cargo package, build it, and run the result.  The output may look something like:
+On running either of these, `cargo-scripter` will generate a Cargo package, build it, and run the result.  The output may look something like:
 
 ```shell
-$ cargo script now
+$ cargo scripter now
     Updating registry `https://github.com/rust-lang/crates.io-index`
    Compiling winapi-build v0.1.1
    Compiling winapi v0.2.8
@@ -154,7 +156,7 @@ Sun, 17 Sep 2017 20:38:58 +1000
 Subsequent runs, provided the script has not changed, will likely just run the cached executable directly:
 
 ```shell
-$ cargo script now
+$ cargo scripter now
 Sun, 17 Sep 2017 20:39:40 +1000
 ```
 
@@ -170,13 +172,13 @@ Useful command-line arguments:
 <a name="expressions"></a>
 ### Expressions
 
-`cargo-script` can also run pieces of Rust code directly from the command line.  This is done by providing the `--expr` option; this causes `cargo-script` to interpret the `<script>` argument as source code *instead* of as a file path.  For example, code can be executed from the command line in a number of ways:
+`cargo-scripter` can also run pieces of Rust code directly from the command line.  This is done by providing the `--expr` option; this causes `cargo-script` to interpret the `<script>` argument as source code *instead* of as a file path.  For example, code can be executed from the command line in a number of ways:
 
-- `cargo script --dep time --expr "extern crate time; time::now().rfc822z().to_string()"`
-- `cargo script --dep time=0.1.38 --expr "extern crate time; ..."` - uses a specific version of `time`
-- `cargo script -d time -e "extern crate time; ..."` - short form of above
-- `cargo script -D time -e "..."` - guess and inject `extern crate time`; this only works when the package and crate names of a dependency match.
-- `cargo script -d time -x time -e "..."` - injects `extern crate time`; works when the names do *not* match.
+- `cargo scripter --dep time --expr "extern crate time; time::now().rfc822z().to_string()"`
+- `cargo scripter --dep time=0.1.38 --expr "extern crate time; ..."` - uses a specific version of `time`
+- `cargo scripter -d time -e "extern crate time; ..."` - short form of above
+- `cargo scripter -D time -e "..."` - guess and inject `extern crate time`; this only works when the package and crate names of a dependency match.
+- `cargo scripter -d time -x time -e "..."` - injects `extern crate time`; works when the names do *not* match.
 
 The code given is embedded into a block expression, evaluated, and printed out using the `Debug` formatter (*i.e.* `{:?}`).
 
@@ -193,7 +195,7 @@ Useful command-line arguments:
 You can use `cargo-script` to write a quick stream filter, by specifying a closure to be called for each line read from stdin, like so:
 
 ```text
-$ cat now.crs | cargo script --loop \
+$ cat now.crs | cargo scripter --loop \
     "let mut n=0; move |l| {n+=1; println!(\"{:>6}: {}\",n,l.trim_right())}"
    Compiling loop v0.1.0 (file:///C:/Users/drk/AppData/Local/Cargo/script-cache/loop-58079283761aab8433b1)
      1: // cargo-deps: time="0.1.25"
@@ -206,7 +208,7 @@ $ cat now.crs | cargo script --loop \
 You can achieve a similar effect to the above by using the `--count` flag, which causes the line number to be passed as a second argument to your closure:
 
 ```text
-$ cat now.crs | cargo script --count --loop \
+$ cat now.crs | cargo scripter --count --loop \
     "|l,n| println!(\"{:>6}: {}\", n, l.trim_right())"
    Compiling loop v0.1.0 (file:///C:/Users/drk/AppData/Local/Cargo/script-cache/loop-58079283761aab8433b1)
      1: // cargo-deps: time="0.1.25"
@@ -260,7 +262,7 @@ fn main() {
 If stored in the templates folder as `grabbag.rs`, you can use it by passing the name `grabbag` via the `--template` option, like so:
 
 ```text
-$ cargo script -t grabbag -e "mem::size_of::<Box<Read>>()"
+$ cargo scripter -t grabbag -e "mem::size_of::<Box<Read>>()"
 16
 ```
 

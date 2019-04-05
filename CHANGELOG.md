@@ -1,3 +1,8 @@
+0.2.12
+======
+
+* Add run-cargo-script-force
+
 0.2.11
 ======
 
