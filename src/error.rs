@@ -122,17 +122,17 @@ impl<T> From<Box<T>> for MainError where T: 'static + Error {
 }
 
 pub trait ResultExt {
-    type Ok;
-    fn err_tag<S>(self, msg: S) -> Result<Self::Ok>
+    type OkRes;
+    fn err_tag<S>(self, msg: S) -> Result<Self::OkRes>
     where S: Into<Cow<'static, str>>;
 
     fn shift_blame(self, blame: Blame) -> Self;
 }
 
 impl<T> ResultExt for Result<T> {
-    type Ok = T;
+    type OkRes = T;
 
-    fn err_tag<S>(self, msg: S) -> Result<Self::Ok>
+    fn err_tag<S>(self, msg: S) -> Result<Self::OkRes>
     where S: Into<Cow<'static, str>> {
         match self {
             Ok(v) => Ok(v),
