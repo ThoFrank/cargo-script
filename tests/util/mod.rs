@@ -17,7 +17,7 @@ macro_rules! cargo_script {
                 let target_dir = ::std::env::var("CARGO_TARGET_DIR")
                     .unwrap_or_else(|_| String::from("target"));
                 let mut cmd = Command::new(format!("{}/debug/cargo-scripter", target_dir));
-                cmd.arg("script");
+                cmd.arg("scripter");
                 cmd.arg("--pkg-path").arg(temp_dir.path());
                 $(
                     cmd.arg($args);
